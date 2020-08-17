@@ -144,7 +144,8 @@ class PortScanner(object):
 
     """
     
-    def __init__(self, nmap_search_path=('nmap','/usr/bin/nmap','/usr/local/bin/nmap','/sw/bin/nmap','/opt/local/bin/nmap') ):
+    def __init__(self, nmap_search_path=('/usr/local/bin/nmap', 'nmap','/usr/bin/nmap','/usr/local/bin/nmap','/sw/bin/nmap','/opt/local/bin/nmap') ):
+    #def __init__(self, nmap_search_path=('/usr/local/bin/nmap') ):
         """
         Initialize PortScanner module
 
@@ -165,7 +166,11 @@ class PortScanner(object):
         self.__process = None
 
         # regex used to detect nmap
-        regex = re.compile('Nmap version [0-9]*\.[0-9]*[^ ]* \( http://.* \)')
+        #regex = re.compile('Nmap version [0-9]*\.[0-9]*[^ ]* \( http://.* \)')
+
+        # Regulärer Ausdruck muss angepasst werden: https://stackoverflow.com/questions/22870839/call-python-nmap-portscanner-nmap-not-found
+        regex = re.compile('Nmap version [0-9]*\.[0-9]*')
+        
         # launch 'nmap -V', we wait after 'Nmap version 5.0 ( http://nmap.org )'
         # This is for Mac OSX. When idle3 is launched from the finder, PATH is not set so nmap was not found
         for nmap_path in nmap_search_path:
@@ -252,7 +257,7 @@ class PortScanner(object):
         :returns: scan_result as dictionnary 
         """
         if sys.version_info[0]==2:
-            assert type(hosts) in (str, unicode), 'Wrong type for [hosts], should be a string [was {0}]'.format(type(hosts))
+            assert type(hosts) in (str, str), 'Wrong type for [hosts], should be a string [was {0}]'.format(type(hosts))
         else:
             assert type(hosts) is str, 'Wrong type for [hosts], should be a string [was {0}]'.format(type(hosts))
         assert type(ports) in (str, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(type(ports))
@@ -561,7 +566,7 @@ class PortScanner(object):
         returns a host detail
         """
         if sys.version_info[0]==2:
-            assert type(host) in (str, unicode), 'Wrong type for [host], should be a string [was {0}]'.format(type(host))
+            assert type(host) in (str, str), 'Wrong type for [host], should be a string [was {0}]'.format(type(host))
         else:
             assert type(host) is str, 'Wrong type for [host], should be a string [was {0}]'.format(type(host))
         return self._scan_result['scan'][host]
@@ -1087,22 +1092,22 @@ def __get_last_online_version():
 
 ############################################################################
 
-def convert_nmap_output_to_encoding(value, code="ascii"):
-    """
-    Change encoding for scan_result object from unicode to whatever
+# def convert_nmap_output_to_encoding(value, code="ascii"):
+#     """
+#     Change encoding for scan_result object from unicode to whatever
     
-    :param value: scan_result as dictionnary
-    :param code: default = "ascii", encoding destination
+#     :param value: scan_result as dictionnary
+#     :param code: default = "ascii", encoding destination
 
-    :returns: scan_result as dictionnary with new encoding
-    """
-    new_value = {}
-    for k in value:
-        if type(value[k]) in [dict, nmap.PortScannerHostDict] :
-            new_value[k] = convert_to_encoding(value[k], code)
-        else:
-            new_value[k] = value[k].encode(code)
-    return new_value
+#     :returns: scan_result as dictionnary with new encoding
+#     """
+#     new_value = {}
+#     for k in value:
+#         if type(value[k]) in [dict, nmap.PortScannerHostDict] :
+#             new_value[k] = convert_to_encoding(value[k], code)
+#         else:
+#             new_value[k] = value[k].encode(code)
+#     return new_value
 
 
 ############################################################################

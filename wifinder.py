@@ -23,6 +23,7 @@ import sys
 import nmap                         # import nmap.py
 import time
 import re
+import subprocess
 
 try:
     nm = nmap.PortScanner()         # instance of nmap.PortScanner
@@ -38,7 +39,7 @@ gracePeriod = 7
 
 def seek():                         # function to scan the network
     curHosts = []
-    nm.scan(hosts = '192.168.1.0/24', arguments = '-n -sP -PE -T5')
+    nm.scan(hosts = '192.168.2.0/24', arguments = '-n -sP -PE -T5')
     # executes a ping scan
 
     localtime = time.asctime(time.localtime(time.time()))
@@ -101,5 +102,6 @@ if __name__ == '__main__':
         new_count = seek()
 
     # DANGER!!!
-    print('OHSHITOHSHITOHSHITOHSHITOHSHIT!')
+    #print('OHSHITOHSHITOHSHITOHSHITOHSHIT!')
+    subprocess.Popen(["say", "Galaxy joined."])
     beep()
